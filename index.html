@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Feliz Aniversário">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text y='150' font-size='150'>🎂</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* BOLO */
+        .cake {
+            position: relative;
+            animation: slideInCake 1.5s ease-out forwards;
+            margin-bottom: 50px;
+        }
+
+        @keyframes slideInCake {
+            0% {
+                transform: scale(0) rotateY(180deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotateY(0);
+                opacity: 1;
+            }
+        }
+
+        .cake-emoji {
+            font-size: 120px;
+            animation: bounceCake 0.6s ease-in-out 1.5s infinite;
+        }
+
+        @keyframes bounceCake {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Velas */
+        .candles-container {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeInCandles 0.5s ease-out 1.8s forwards;
+        }
+
+        @keyframes fadeInCandles {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .candle {
+            position: relative;
+            width: 6px;
+            height: 30px;
+            background: #DAA520;
+            border-radius: 3px;
+        }
+
+        .flame {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 15px;
+            background: #FF6B6B;
+            border-radius: 50% 50% 50% 0;
+            animation: flameFlicker 0.4s ease-in-out infinite;
+        }
+
+        @keyframes flameFlicker {
+            0%, 100% {
+                transform: translateX(-50%) scaleY(1);
+                filter: drop-shadow(0 0 3px #FFA500);
+            }
+            50% {
+                transform: translateX(-50%) scaleY(1.1);
+                filter: drop-shadow(0 0 8px #FFA500);
+            }
+        }
+
+        /* CARTA */
+        .envelope-container {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInEnvelope 0.3s ease-out 3.5s forwards;
+        }
+
+        @keyframes fadeInEnvelope {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .envelope {
+            perspective: 1000px;
+            cursor: pointer;
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .envelope-body {
+            width: 400px;
+            height: 280px;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFDAB9 100%);
+            border: 3px solid #DEB887;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: 3px solid #DAA520;
+            border-radius: 10px 10px 0 0;
+            transform-origin: top center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .envelope-flap.open {
+            transform: rotateX(-180deg);
+        }
+
+        .envelope-inner {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: white;
+            z-index: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message-content {
+            text-align: center;
+            color: #333;
+            line-height: 1.6;
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .heart-final {
+            font-size: 80px;
+            margin-top: 20px;
+            animation: heartPulse 1s ease-in-out 4.5s infinite;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 14px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Confetes */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cake-emoji {
+                font-size: 80px;
+            }
+
+            .envelope-body {
+                width: 85vw;
+                height: 60vh;
+                max-width: 400px;
+            }
+
+            .message-content {
+                font-size: 20px;
+            }
+
+            .heart-final {
+                font-size: 60px;
+            }
+        }
+
+        .download-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            opacity: 0;
+            animation: slideInBtn 0.5s ease-out 6s forwards;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+
+        .download-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes slideInBtn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 600px) {
+            .download-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- BOLO -->
+        <div class="cake">
+            <div class="candles-container">
+                <div class="candle">
+                    <div class="flame"></div>
+                </div>
+                <div class="candle">
+                    <div class="flame"></div>
+                </div>
+                <div class="candle">
+                    <div class="flame"></div>
+                </div>
+            </div>
+            <div class="cake-emoji">🎂</div>
+        </div>
+    </div>
+
+    <!-- CARTA -->
+    <div class="envelope-container">
+        <div class="envelope" id="envelope">
+            <div class="envelope-body">
+                <div class="envelope-flap" id="flap">
+                    💌
+                </div>
+                <div class="envelope-inner">
+                    <div class="message-content">
+                        Feliz Aniversário,<br><br>
+                        que Deus te abençõe grandemente<br>
+                        a cada dia mais de sua vida.
+                    </div>
+                    <div class="heart-final">❤️</div>
+                </div>
+            </div>
+            <div class="click-hint" id="hint">Clique para abrir</div>
+        </div>
+    </div>
+
+    <!-- Botão de Download -->
+    <button class="download-btn" id="downloadBtn" title="Baixar como GIF">
+        ⬇️ Baixar GIF
+    </button>
+
+    <script>
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+        }
+
+        // Variáveis globais para GIF
+        let gifFrames = [];
+        let isRecording = false;
+        let gif = null;
+
+        // Inicializar captura de GIF
+        function startGifCapture() {
+            isRecording = true;
+            gifFrames = [];
+            
+            // Criar instância do GIF
+            gif = new GIF({
+                workers: 2,
+                quality: 10,
+                workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js',
+                width: Math.min(window.innerWidth, 800),
+                height: Math.min(window.innerHeight, 600)
+            });
+
+            // Capturar frame a cada 100ms durante 7 segundos
+            let frameCount = 0;
+            const maxFrames = 70; // 7 segundos a 10fps
+            
+            const captureInterval = setInterval(() => {
+                if (frameCount >= maxFrames) {
+                    clearInterval(captureInterval);
+                    isRecording = false;
+                    console.log('Captura de GIF concluída');
+                    return;
+                }
+
+                html2canvas(document.body, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null
+                }).then(canvas => {
+                    gif.addFrame(canvas, {delay: 100});
+                    frameCount++;
+                }).catch(err => {
+                    console.log('Erro ao capturar frame:', err);
+                });
+            }, 100);
+
+            // Finalizar GIF e preparar para download
+            setTimeout(() => {
+                if (gif) {
+                    gif.on('finished', function(blob) {
+                        // Armazenar blob globalmente para download
+                        window.gifBlob = blob;
+                        console.log('GIF pronto para download');
+                    });
+                    gif.render();
+                }
+            }, 7000);
+        }
+
+        // Lógica da carta
+        const envelope = document.getElementById('envelope');
+        const flap = document.getElementById('flap');
+        const hint = document.getElementById('hint');
+        const downloadBtn = document.getElementById('downloadBtn');
+        let isOpen = false;
+
+        envelope.addEventListener('click', function() {
+            if (!isOpen) {
+                flap.classList.add('open');
+                hint.style.display = 'none';
+                isOpen = true;
+                createConfetti();
+            }
+        });
+
+        // Evento de download
+        downloadBtn.addEventListener('click', function() {
+            if (window.gifBlob) {
+                const url = URL.createObjectURL(window.gifBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'Feliz_Aniversario.gif';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } else {
+                alert('O GIF ainda está sendo processado. Aguarde um momento e tente novamente.');
+            }
+        });
+
+        // Função para criar confetes
+        function createConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#FF69B4'];
+            
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2.5) + 's';
+                confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                document.body.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5800);
+            }
+        }
+
+        // Iniciar captura de GIF quando página carregar
+        window.addEventListener('load', () => {
+            setTimeout(startGifCapture, 100);
+        });
+    </script>
+</body>
+</html>
