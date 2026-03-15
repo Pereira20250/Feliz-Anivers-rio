@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,43 +27,55 @@ overflow:hidden;
 
 .container{
 position:relative;
+width:100%;
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
 }
+
+/* BOLO */
 
 .cake{
-animation:slideIn 1.5s forwards;
+animation:slideInCake 1.5s forwards;
 }
 
-@keyframes slideIn{
-0%{transform:scale(0);opacity:0}
-100%{transform:scale(1);opacity:1}
+@keyframes slideInCake{
+0%{
+transform:scale(0);
+opacity:0;
+}
+100%{
+transform:scale(1);
+opacity:1;
+}
 }
 
 .cake-emoji{
-font-size:120px;
-animation:bounce 1s infinite;
+font-size:110px;
+animation:bounceCake 1s infinite;
 }
 
-@keyframes bounce{
+@keyframes bounceCake{
 0%,100%{transform:translateY(0)}
 50%{transform:translateY(-20px)}
 }
 
+/* CARTA */
+
 .envelope-container{
 position:fixed;
 width:100%;
-height:100%;
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+z-index:10;
 opacity:0;
-animation:showEnvelope 1s 3s forwards;
+animation:fadeInEnvelope 0.3s ease-out 3s forwards;
 }
 
-@keyframes showEnvelope{
+@keyframes fadeInEnvelope{
 to{opacity:1}
 }
 
@@ -71,27 +84,28 @@ cursor:pointer;
 }
 
 .envelope-body{
-width:400px;
-height:320px;
+width:420px;
+height:420px;
 background:white;
-border-radius:10px;
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
-position:relative;
+border-radius:12px;
+box-shadow:0 20px 60px rgba(0,0,0,0.3);
 overflow:hidden;
+position:relative;
 }
 
 .envelope-flap{
 position:absolute;
 top:0;
 width:100%;
-height:120px;
-background:gold;
+height:130px;
+background:linear-gradient(135deg,#FFD700,#FFA500);
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
 font-size:30px;
-transition:0.8s;
 transform-origin:top;
+transition:0.8s;
+z-index:2;
 }
 
 .envelope-flap.open{
@@ -99,48 +113,71 @@ transform:rotateX(-180deg);
 }
 
 .envelope-inner{
-margin-top:120px;
+position:absolute;
+top:130px;
+width:100%;
+height:calc(100% - 130px);
 padding:20px;
+overflow:auto;
 text-align:center;
 }
+
+/* TEXTO */
 
 .message-content{
-font-size:24px;
+font-size:22px;
 font-weight:bold;
 color:#333;
+line-height:1.5;
+margin-bottom:10px;
 }
 
-.heart-final{
-font-size:60px;
-margin-top:10px;
-}
+/* FIGURINHA */
 
 .sticker-area{
-margin-top:15px;
-text-align:center;
+margin-top:10px;
 }
 
 .sticker{
-width:160px;
+width:120px;
+display:block;
+margin:auto;
 }
+
+/* TEXTO LOVE */
 
 .love-text{
-font-size:22px;
+margin-top:8px;
+font-size:20px;
 font-weight:bold;
 color:#ff4d6d;
+}
+
+/* CORAÇÃO */
+
+.heart-final{
+font-size:55px;
 margin-top:10px;
 }
 
+/* TEXTO CLIQUE */
+
 .click-hint{
-text-align:center;
-margin-top:10px;
-color:#555;
+position:absolute;
+bottom:-30px;
+left:50%;
+transform:translateX(-50%);
+color:#444;
+font-size:14px;
 }
+
+/* CONFETES */
 
 .confetti{
 position:fixed;
 width:10px;
 height:10px;
+pointer-events:none;
 animation:fall linear forwards;
 }
 
@@ -151,7 +188,27 @@ opacity:0;
 }
 }
 
+/* MOBILE */
+
+@media(max-width:600px){
+
+.envelope-body{
+width:90vw;
+height:420px;
+}
+
+.message-content{
+font-size:19px;
+}
+
+.sticker{
+width:100px;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -159,12 +216,12 @@ opacity:0;
 <div class="container">
 
 <div class="cake">
-
 <div class="cake-emoji">🎂</div>
-
 </div>
 
 </div>
+
+<!-- CARTA -->
 
 <div class="envelope-container">
 
@@ -201,7 +258,9 @@ I love you lots
 
 </div>
 
-<div class="click-hint">Clique para abrir</div>
+<div class="click-hint">
+Clique para abrir
+</div>
 
 </div>
 
@@ -212,17 +271,17 @@ I love you lots
 const envelope=document.getElementById("envelope")
 const flap=document.getElementById("flap")
 
-let open=false
+let aberto=false
 
 envelope.addEventListener("click",()=>{
 
-if(!open){
+if(!aberto){
 
 flap.classList.add("open")
 
 createConfetti()
 
-open=true
+aberto=true
 
 }
 
